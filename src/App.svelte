@@ -1,12 +1,10 @@
 <script>
 	let data = "test";
-	let editMode = false;
+	let editTask = '';
 
 	const submit = function (e) {
 		// prevent default form action from being carried out
 		e.preventDefault();
-		data = "submitted";
-		console.log(data);
 
 		const task = document.querySelector("#task"),
 			due = document.querySelector("#due"),
@@ -46,8 +44,8 @@
 	};
 
 	const update = function (name) {
-		editMode = false
-		const taskhtml = document.getElementById(name)
+		editTask = '';
+		const taskhtml = document.getElementById(name);
 		const task = taskhtml.querySelector("#task"),
 			due = taskhtml.querySelector("#due"),
 			json = {
@@ -62,7 +60,6 @@
 		})
 			.then((response) => response.json())
 			.then((tasks) => {
-				console.log(tasks)
 				if (tasks.message) {
 					alert(tasks.message);
 				} else {
@@ -72,7 +69,6 @@
 	};
 
 	const open = function (priority) {
-		debugger;
 		let dropdown = document.getElementsByClassName(`dropdown ${priority}`);
 		if (dropdown[0].className.includes("closed")) {
 			dropdown[0].className = `dropdown ${priority} open`;
@@ -111,14 +107,14 @@
 			{#each data as task}
 				{#if task.priority === "high"}
 					<div class="task-card" id={task.taskname}>
-						{#if !editMode}
+						{#if editTask !== task.taskname}
 							<div class="task-block">
 								<img
 									class="pencil"
 									src="pencil.png"
 									alt="pencil"
 									on:click={() => {
-										editMode = true;
+										editTask = task.taskname
 									}}
 								/>
 								<div class="task-info">
@@ -146,7 +142,7 @@
 									src="cancel.png"
 									alt="cancel button"
 									on:click={() => {
-										editMode = false;
+										editTask = '';
 									}}
 								/>
 
@@ -154,7 +150,7 @@
 									src="check.png"
 									alt="confirm button"
 									on:click={() => {
-										update(task.taskname)
+										update(task.taskname);
 									}}
 								/>
 							</div>
@@ -178,20 +174,54 @@
 			{#each data as task}
 				{#if task.priority === "medium"}
 					<div class="task-card" id={task.taskname}>
-						<div class="task-block">
-							<img class="pencil" src="pencil.png" alt="pencil" />
-							<div class="task-info">
-								<h2>{task.taskname}</h2>
-								<p>Due: {task.dueDate}</p>
-								<p />
+						{#if editTask !== task.taskname}
+							<div class="task-block">
+								<img
+									class="pencil"
+									src="pencil.png"
+									alt="pencil"
+									on:click={() => {
+										editTask = task.taskname;
+									}}
+								/>
+								<div class="task-info">
+									<h2>{task.taskname}</h2>
+									<p>Due: {task.dueDate}</p>
+									<p />
+								</div>
+								<img
+									class="check"
+									src="check.png"
+									alt="check"
+									on:click={() =>
+										markCompleted(task.taskname)}
+								/>
 							</div>
-							<img
-								class="check"
-								src="check.png"
-								alt="check"
-								on:click={() => markCompleted(task.taskname)}
+						{:else}
+							<input
+								type="text"
+								id="task"
+								value={task.taskname}
 							/>
-						</div>
+							<input type="date" id="due" value={task.dueDate} />
+							<div class="edit-imgs">
+								<img
+									src="cancel.png"
+									alt="cancel button"
+									on:click={() => {
+										editTask = '';
+									}}
+								/>
+
+								<img
+									src="check.png"
+									alt="confirm button"
+									on:click={() => {
+										update(task.taskname);
+									}}
+								/>
+							</div>
+						{/if}
 						<hr />
 					</div>
 				{/if}
@@ -211,20 +241,54 @@
 			{#each data as task}
 				{#if task.priority === "low"}
 					<div class="task-card" id={task.taskname}>
-						<div class="task-block">
-							<img class="pencil" src="pencil.png" alt="pencil" />
-							<div class="task-info">
-								<h2>{task.taskname}</h2>
-								<p>Due: {task.dueDate}</p>
-								<p />
+						{#if editTask !== task.taskname}
+							<div class="task-block">
+								<img
+									class="pencil"
+									src="pencil.png"
+									alt="pencil"
+									on:click={() => {
+										editTask = task.taskname;
+									}}
+								/>
+								<div class="task-info">
+									<h2>{task.taskname}</h2>
+									<p>Due: {task.dueDate}</p>
+									<p />
+								</div>
+								<img
+									class="check"
+									src="check.png"
+									alt="check"
+									on:click={() =>
+										markCompleted(task.taskname)}
+								/>
 							</div>
-							<img
-								class="check"
-								src="check.png"
-								alt="check"
-								on:click={() => markCompleted(task.taskname)}
+						{:else}
+							<input
+								type="text"
+								id="task"
+								value={task.taskname}
 							/>
-						</div>
+							<input type="date" id="due" value={task.dueDate} />
+							<div class="edit-imgs">
+								<img
+									src="cancel.png"
+									alt="cancel button"
+									on:click={() => {
+										editTask = '';
+									}}
+								/>
+
+								<img
+									src="check.png"
+									alt="confirm button"
+									on:click={() => {
+										update(task.taskname);
+									}}
+								/>
+							</div>
+						{/if}
 						<hr />
 					</div>
 				{/if}
