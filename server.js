@@ -48,8 +48,7 @@ const handleUpdate = function (request, response) {
   })
 
   request.on('end', function () {
-    data = JSON.parse(dataString)
-    debugger
+    let data = JSON.parse(dataString)
     if (data.taskname.length > 0 && data.dueDate.length > 0 && (!tasks.find(n => n.taskname === data.taskname) || data.taskname === data.oldtaskname)) {
       let today = new Date();
       let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
